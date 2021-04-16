@@ -1,2 +1,1 @@
-#group nextflow
-
+#group nextflow project Hi-C
