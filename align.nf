@@ -1,7 +1,7 @@
 #!/bin/bash/env nextflow
 
 reads = "$baseDir/data/*_R{1,2}.fastq.gz"
-reference = "$baseDir/reference/*.fsa.txt"
+reference = "$baseDir/reference/*.fsa"
 outDir = "$baseDir/results"
 project_dir = projectDir
 
