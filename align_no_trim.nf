@@ -13,7 +13,7 @@ Channel
 Channel
 	.fromPath(reference)
 	.map{file -> [file.simpleName, file]}
-	.into{ reference_ch; fasta_for_resfrag_ch }
+	.into{ reference_ch; fasta_for_resfrag_ch; fasta_for_chromsize }
 
 
 process create_bowtie2_index {
@@ -153,3 +153,45 @@ process remove_duplicates {
 	"""
 }
 
+
+process makeChromSize {
+        publishDir path: "$outDir/chrom_size", mode: "copy"
+
+        input:
+        tuple val(base), file(fasta) from fasta_for_chromsize
+
+        output:
+        file("*.size") into chromosome_size, chromosome_size_cool
+
+        script:
+        """
+	samtools faidx ${fasta}
+	cut -f1,2 ${fasta}.fai > chrom.size
+	"""
+}
+
+
+// Resolutions for contact maps
+bin_size = '1000000,500000'
+map_res = bin_size.tokenize(',')
+
+process build_contact_maps {
+	publishDir path: "$outDir/matrix/raw", mode: "copy"
+
+	input:
+	tuple val(sample), file(vpairs), val(mres) from all_valid_pairs.combine(map_res)
+	file chrsize from chromosome_size.collect()
+
+	output:
+	file("*.matrix") into raw_maps
+	file "*.bed"
+
+	script:
+	"""
+	${project_dir}/build_matrix --matrix-format upper  \\
+	--binsize ${mres} \\
+	--chrsizes ${chrsize} \\
+	--ifile ${vpairs} \\
+	--oprefix ${sample}_${mres}
+	"""
+}
