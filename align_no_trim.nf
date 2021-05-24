@@ -59,11 +59,11 @@ process bowtie2_end_to_end {
 	tuple val(base), file(index) from index_ch
 
 	output:
-	tuple val(name), file("${reads[0]}.bam") into end_to_end_bam
+	tuple val(prefix), file("${name}.bam") into end_to_end_bam
 
 	script:
-	prefix = reads[0]
-	name = prefix.toString() - ~/(_R1|_R2|_val_1|_val_2|_1|_2)$/
+	name = reads[0]
+	prefix = name.toString() - ~/(_R1|_R2|_val_1|_val_2|_1|_2)$/
 
         """
         bowtie2 -x ${base} \\
@@ -154,7 +154,8 @@ process remove_duplicates {
 }
 
 
-process makeChromSize {
+
+process make_chrom_size {
         publishDir path: "$outDir/chrom_size", mode: "copy"
 
         input:
@@ -169,6 +170,30 @@ process makeChromSize {
 	cut -f1,2 ${fasta}.fai > chrom.size
 	"""
 }
+
+
+process merge_sample {
+	publishDir "$outDir/mstats", mode: "copy"
+
+	input:
+	tuple val(prefix), file(fstat) from all_rsstat.groupTuple().concat(all_pairstat.groupTuple())
+
+	output:
+	file("*") into all_mstats
+
+	script:
+	sample = prefix.toString() - ~/(_R1|_R2|_val_1|_val_2|_1|_2)/
+	if ( (fstat =~ /.mapstat/) ){ ext = "mmapstat" }
+	if ( (fstat =~ /.pairstat/) ){ ext = "mpairstat" }
+	if ( (fstat =~ /.RSstat/) ){ ext = "mRSstat" }
+
+	"""
+        mkdir -p $outDir/mstats/${sample}
+        python $project_dir/merge_statfiles.py -f ${fstat} > ${prefix}.${ext}
+	"""
+}
+
+
 
 
 // Resolutions for contact maps
@@ -193,5 +218,25 @@ process build_contact_maps {
 	--chrsizes ${chrsize} \\
 	--ifile ${vpairs} \\
 	--oprefix ${sample}_${mres}
+	"""
+}
+
+
+process run_ice{
+	publishDir "$outDir/matrix/iced", mode: "copy"
+
+	input:
+	file(rmaps) from raw_maps
+
+	output:
+	file("*iced.matrix") into iced_maps
+
+	script:
+	prefix = rmaps.toString() - ~/(\.matrix)?$/
+	"""
+	ice --filter_low_counts_perc 0.02 \
+	--results_filename ${prefix}_iced.matrix \
+	--filter_high_counts_perc 0 \
+	--max_iter 100 --eps 0.1 --remove-all-zeros-loci --output-bias 1 --verbose 1 ${rmaps}
 	"""
 }
