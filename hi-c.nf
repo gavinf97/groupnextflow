@@ -300,6 +300,8 @@ process run_ice{
 /*
   Combines the R1 and R2 statistics files. Statistics about read pairs filtering are available in the
   .mRSstat file, and pairing statistics are available in the .mpairstat file.
+*/
+
 process merge_stats {
 	publishDir "$outDir/mstats", mode: "copy"
 
@@ -320,6 +322,7 @@ process merge_stats {
 }
 
 
+// Perform quality control using FastQC
 process fastqc {
 	input:
 	tuple val(sample), file(reads) from reads_for_fastqc
