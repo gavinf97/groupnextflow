@@ -1,6 +1,6 @@
 # Group Nextflow Assignment
 
-## Assignment Description:
+## Assignment Description
 Produce as working Hi-C nextflow script based off of the NF-core Hi-C pipeline steps and also include a singularity container for reproducibility.
 https://github.com/nf-core/hic
 
