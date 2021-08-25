@@ -14,7 +14,7 @@ Runs Hi-C analsyis in conjunction with Singulairty container. Sample input FASTQ
 For use in the Hi-C pipeline to produce an output
 Test dataset reference source: https://github.com/nf-core/test-datasets/tree/hic
 
-#### 1.2 Alignment script
+#### 1.2 Alignment scripts
 align.nf
 -Run “align.nf” to do Step 1 of the pipeline (mapping using a two steps strategy to rescue reads spanning the ligation sites). 
 
