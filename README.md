@@ -1,8 +1,10 @@
-# groupnextflow
+# Group Nextflow Assignment
+
+## Assignment as part of the NUIG MSc in Biomedical Genomics
 Hi-C nextflow script based off of the NF-core Hi-C pipeline including a singularity container.
 https://github.com/nf-core/hic
 
-
+## Description of directories
 Test dataset/reference source: https://github.com/nf-core/test-datasets/tree/hic
 
 Within working directory: align.nf, mergeSAM.py, (any other required python scripts) and the subdirectories /data and /reference
