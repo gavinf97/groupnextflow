@@ -7,6 +7,7 @@ https://github.com/nf-core/hic
 ## Description of files for runnning Hi-C
 
 ### 1. Nextflow Script
+'hi-c.nf'
 Runs Hi-C analsyis in conjunction with Singularity container. Sample input FASTQ files present for test run.
 
 ### Nextflow Dependency Files
