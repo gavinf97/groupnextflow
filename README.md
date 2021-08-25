@@ -1,7 +1,7 @@
 # Group Nextflow Assignment
 
-## Assignment as part of the NUIG MSc in Biomedical Genomics
-Hi-C nextflow script based off of the NF-core Hi-C pipeline including a singularity container.
+## Assignment Description:
+Produce as usable Hi-C nextflow script based off of the NF-core Hi-C pipeline steps including a singularity container for reproducibility.
 https://github.com/nf-core/hic
 
 ## Description of directories
